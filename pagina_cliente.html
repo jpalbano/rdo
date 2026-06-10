@@ -81,12 +81,31 @@ function fit(){const r=cv.getBoundingClientRect();const dpr=window.devicePixelRa
 function pos(e){const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
 function s(e){drawing=true;ph.classList.add('hide');last=pos(e);e.preventDefault()}
 function mv(e){if(!drawing)return;const p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;e.preventDefault()}
-function en(){if(!drawing)return;drawing=false;st.sigData=cv.toDataURL('image/png');st.sigTime=new Date()}
+function recortarSig(dataURL,cb){
+  const img=new Image();
+  img.onload=function(){
+    const c=document.createElement('canvas');c.width=img.width;c.height=img.height;
+    const x=c.getContext('2d');x.drawImage(img,0,0);
+    const d=x.getImageData(0,0,c.width,c.height).data;
+    let minX=c.width,minY=c.height,maxX=0,maxY=0,found=false;
+    for(let yy=0;yy<c.height;yy++)for(let xx=0;xx<c.width;xx++){if(d[(yy*c.width+xx)*4+3]>20){found=true;if(xx<minX)minX=xx;if(xx>maxX)maxX=xx;if(yy<minY)minY=yy;if(yy>maxY)maxY=yy;}}
+    if(!found){cb(dataURL);return;}
+    const bw=maxX-minX+1,bh=maxY-minY+1;
+    const H=120,scale=H/bh,W=Math.round(bw*scale);
+    const mx=Math.round(W*0.06),my=Math.round(H*0.10);
+    const out=document.createElement('canvas');out.width=W+mx*2;out.height=H+my*2;
+    const o=out.getContext('2d');o.drawImage(img,minX,minY,bw,bh,mx,my,W,H);
+    cb(out.toDataURL('image/png'));
+  };
+  img.onerror=function(){cb(dataURL)};
+  img.src=dataURL;
+}
+function en(){if(!drawing)return;drawing=false;recortarSig(cv.toDataURL('image/png'),r=>{st.sigData=r});st.sigTime=new Date()}
 ['mousedown','touchstart'].forEach(ev=>cv.addEventListener(ev,s,{passive:false}));
 ['mousemove','touchmove'].forEach(ev=>cv.addEventListener(ev,mv,{passive:false}));
 ['mouseup','touchend','mouseleave'].forEach(ev=>cv.addEventListener(ev,en));
 function clearSig(){ctx.clearRect(0,0,cv.width,cv.height);st.sigData=null;st.sigTime=null;ph.classList.remove('hide')}
-function gerarDoNome(nome){nome=(nome||'').trim();if(!nome){toast('Digite seu nome primeiro');return}const W=cv.width,H=cv.height,dpr=window.devicePixelRatio||1;ctx.clearRect(0,0,W,H);ctx.fillStyle='#14290f';ctx.textBaseline='middle';let fs=44;do{ctx.font='italic '+fs+'px "Segoe Script","Brush Script MT",cursive';fs-=2;}while(ctx.measureText(nome).width>(W/dpr-30)&&fs>14);ctx.fillText(nome,18,H/(2*dpr));st.sigData=cv.toDataURL('image/png');st.sigTime=new Date();ph.classList.add('hide');toast('Assinatura gerada do nome');}
+function gerarDoNome(nome){nome=(nome||'').trim();if(!nome){toast('Digite seu nome primeiro');return}const W=cv.width,H=cv.height,dpr=window.devicePixelRatio||1;ctx.clearRect(0,0,W,H);ctx.fillStyle='#14290f';ctx.textBaseline='middle';let fs=44;do{ctx.font='italic '+fs+'px "Segoe Script","Brush Script MT",cursive';fs-=2;}while(ctx.measureText(nome).width>(W/dpr-30)&&fs>14);ctx.fillText(nome,18,H/(2*dpr));recortarSig(cv.toDataURL('image/png'),r=>{st.sigData=r});st.sigTime=new Date();ph.classList.add('hide');toast('Assinatura gerada do nome');}
 function montarDoc(){
   const nome=document.getElementById('respNome').value.trim()||'Responsável pela obra';
   const info=st.sigTime?`aceite em ${st.sigTime.toLocaleString('pt-BR')}`:'';
