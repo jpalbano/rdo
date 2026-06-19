@@ -1,6 +1,6 @@
 // Service Worker — RDO Albano
 // Para forçar atualização do app nos celulares, basta mudar o número da versão abaixo.
-const VERSAO = 'rdo-albano-v2';
+const VERSAO = 'rdo-albano-v3';
 const ARQUIVOS = [
   './RDO_Campo_Albano.html',
   './manifest.json'
