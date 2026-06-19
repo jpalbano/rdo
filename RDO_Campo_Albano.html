@@ -116,7 +116,7 @@ textarea{resize:vertical;min-height:64px}
 
   <div class="card"><h2>Assinatura do técnico</h2>
     <p class="hint" style="margin-top:0;margin-bottom:8px">Assinatura de quem executou o serviço em campo.</p>
-    <div class="sigwrap"><canvas id="sigT" class="sigbox" width="494" height="170"></canvas><div class="sigph" id="sigphT">toque aqui e assine</div></div>
+    <div class="sigwrap"><canvas id="sigT" class="sigbox" width="617" height="212"></canvas><div class="sigph" id="sigphT">toque aqui e assine</div></div>
     <div class="barbtn"><button onclick="gerarDoNome('sigT',document.getElementById('tecnico').value)">Gerar do nome</button><button onclick="clearSigT()">Limpar</button></div></div>
 
   <div class="card"><h2>Assinatura do responsável</h2>
@@ -126,7 +126,7 @@ textarea{resize:vertical;min-height:64px}
     <div id="modoTela">
       <label>Nome do responsável pela obra</label><input id="respNome" placeholder="quem está recebendo">
       <label style="margin-top:10px">Assinatura</label>
-      <div class="sigwrap"><canvas id="sig" class="sigbox" width="494" height="170"></canvas><div class="sigph" id="sigph">toque aqui e assine</div></div>
+      <div class="sigwrap"><canvas id="sig" class="sigbox" width="617" height="212"></canvas><div class="sigph" id="sigph">toque aqui e assine</div></div>
       <div class="barbtn"><button onclick="gerarDoNome('sig',document.getElementById('respNome').value)">Gerar do nome</button><button onclick="clearSig()">Limpar</button></div>
       <p class="hint">A assinatura registra data e hora do aceite no documento (MP 2.200-2/2001).</p></div>
     <div id="modoLink" class="linkbox">
@@ -179,6 +179,19 @@ const DEFAULT_CFG = {
         {
           "obra": "Business Park BR101",
           "local": "Penha/SC"
+        }
+      ]
+    },
+    {
+      "nome": "Bravo Escavações",
+      "obras": [
+        {
+          "obra": "Loteamento Murta",
+          "local": "Itajaí/SC"
+        },
+        {
+          "obra": "Loteamento Vivenda",
+          "local": "Itajaí/SC"
         }
       ]
     }
